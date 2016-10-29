@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div id="users_list"></div>
+    </div>
+
+    
+    <script type="text/javascript">
+    $(document).ready(function() {
+        // $("#get_users_button").click(function(){
+        // console.log("get users clicked");
+        
+    //$( window ).load(function() {
+    	console.log('ready'); 
+    	$.ajax({ url:"/users", method: "GET", success: showUsers, error: showError, });
+
+    
+
+    function showUsers(data, status) {
+        $("#users_list").empty();
+        if ($.isEmptyObject(data)) {
+            $("#users_list").append("<h4>You have no users.</h4>");
+        } else {
+
+            $.each(data, function(i, todoObject) {
+                $("#users_list").append(
+                    $('<div>')
+                    .append($('<span>').css({
+                        display: 'inline-block',
+                        width: '50px'
+                    }).text(data[i].user_Id))
+                    .append($('<span>').css({
+                        display: 'inline-block',
+                        width: '50px'
+                    }).text(data[i].LastName))
+                    .append($('<span>').css({
+                        display: 'inline-block',
+                        width: '100px'
+                    }).text(data[i].FirstName))
+                    .append($('<span>').css({
+                        display: 'inline-block',
+                        width: '100px'
+                    }).text(data[i].City))
+
+                    .append($('<button>').text('Show todos for user').click(function() {
+                        $.ajax({
+                            url: "http://localhost:8080/usertodos/" + data[i].user_Id,
+                            method: "GET",
+                            success: showUserTodos
+                        })
+                    }))
+                )
+            });
+        }
+    }
+
+    function showError(resp, status) {
+        if (resp.responseJSON && resp.responseJSON.error) {
+            $("#errormsg").text(resp.responseJSON.error)
+        } else {
+            $("#errormsg").text(resp.responseText)
+        }
+    }
+
+    });
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+
+</html>
