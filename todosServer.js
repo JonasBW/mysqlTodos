@@ -118,6 +118,25 @@ app.get('/users', function (request, response) {
   })
 })
 
+app.get('/user/todos/:id', function (request, response) {
+  var id = request.params.id
+  var rows = todosAPI.getUserTodos(connection, id, function (rows) {
+    var resultUsers = []
+
+    for (var i = 0; i < rows.length; i++) {
+      var responseBody = {'User Id': rows[i].user_Id,
+        'LastName': rows[i].LastName,
+        'FirstName': rows[i].FirstName,
+      'Todo': rows[i].Name}
+      resultUsers.push(responseBody)
+    }
+
+    // console.log(resultUsers)
+    response.send(resultUsers)
+    response.end()
+  })
+})
+
 function sendError (response, code, message) {
   response.statusCode = code
   response.json({
@@ -127,4 +146,5 @@ function sendError (response, code, message) {
 }
 
 // Start the server.
-app.listen(3080)
+app.listen(8080)
+console.log('Listening to port 8080')
