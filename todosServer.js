@@ -32,6 +32,11 @@ app.get('/', function (request, response) {
   response.sendFile('./index.html', {root: __dirname})
 })
 
+// Send Users HTML file
+app.get('/users.html', function (request, response) {
+  response.sendFile('./users.html', {root: __dirname})
+})
+
 // Actions
 app.get('/todo', function (request, response) {
   var id = request.params.id
@@ -105,9 +110,8 @@ app.get('/users', function (request, response) {
     var resultUsers = []
 
     for (var i = 0; i < rows.length; i++) {
-      var responseBody = {'User Id': rows[i].user_Id,
-        'LastName': rows[i].LastName,
-        'FirstName': rows[i].FirstName,
+      var responseBody = {'UserId': rows[i].user_Id,
+        'FullName': rows[i].LastName + ', ' + rows[i].FirstName,
       'City': rows[i].City}
       resultUsers.push(responseBody)
     }
@@ -119,6 +123,8 @@ app.get('/users', function (request, response) {
 })
 
 app.get('/user/todos/:id', function (request, response) {
+  // console.log('request came')
+  // console.log(request.params.id)
   var id = request.params.id
   var rows = todosAPI.getUserTodos(connection, id, function (rows) {
     var resultUsers = []

@@ -8,15 +8,16 @@
 </head>
 
 <body>
-    <p>my users page</p>
+    
     <div class="container">
-        <div id="users_list"></div>
+        <h3>Users List</h3>
+        <div id="users_list"></div><br>
+        <div id="userTodos_list"></div>
     </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script type="text/javascript">
 
     $(document).ready(function() {
-
-        console.log('ready');
         $.ajax({
             url: "/users",
             method: "GET",
@@ -24,66 +25,73 @@
             error: showError
         });
 
-        $(function showUsers(data, status) {
+        function showUsers(data, status) {
+        $("#users_list").empty();
+        if ($.isEmptyObject(data)) {
+        $("#users_list").append("<h4>You have no users.</h4>");
+        } else {
+        $.each(data, function(i, todoObject) {
+        $("#users_list").append(
+            $('<div>')
+            .append($('<span>').css({
+                display: 'inline-block',
+                width: '50px'
+            }).text(data[i].UserId))
+            .append($('<span>').css({
+                display: 'inline-block',
+                width: '100px'
+            }).text(data[i].FullName))
+            // .append($('<span>').css({
+            //     display: 'inline-block',
+            //     width: '100px'
+            // }).text(data[i].FirstName))
+            .append($('<span>').css({
+                display: 'inline-block',
+                width: '100px'
+            }).text(data[i].City))
+            .append($('<button>').text('Show todos for user').click(function() {
+                //console.log("/user/todos/" + data[i].UserId)
+                $.ajax({
+                  url: '/user/todos/' + data[i].UserId,
+                  method: "GET",
+                  success: showUserTodos,
+                  error:showError,
+                })
 
-            var jsonObj = $.parseJSON(data);
-            var html = '<table border="1">';
-            $.each(jsonObj, function(key, value) {
-                html += '<tr>';
-                html += '<td>' + key + '</td>';
-                html += '<td>' + value + '</td>';
-                html += '</tr>';
-            });
-            html += '</table>';
-
-            $('div').html(html);
-            $('div').html(html);
+            }))
+        )
         });
+        }
+        }
 
 
-        // $("#get_users_button").click(function(){
-        // console.log("get users clicked");
+function showUserTodos(data, status) {
 
-        //$( window ).load(function() {
-
-
-
-
-        // function showUsers(data, status) {
-        // $("#users_list").empty();
-        // if ($.isEmptyObject(data)) {
-        // $("#users_list").append("<h4>You have no users.</h4>");
-        // } else {
-        // $.each(data, function(i, todoObject) {
-        // $("#users_list").append(
-        //     $('<div>')
-        //     .append($('<span>').css({
-        //         display: 'inline-block',
-        //         width: '50px'
-        //     }).text(data[i].user_Id))
-        //     .append($('<span>').css({
-        //         display: 'inline-block',
-        //         width: '50px'
-        //     }).text(data[i].LastName))
-        //     .append($('<span>').css({
-        //         display: 'inline-block',
-        //         width: '100px'
-        //     }).text(data[i].FirstName))
-        //     .append($('<span>').css({
-        //         display: 'inline-block',
-        //         width: '100px'
-        //     }).text(data[i].City))
-        //     .append($('<button>').text('Show todos for user').click(function() {
-        //         $.ajax({
-        //           url: "http://localhost:8080/usertodos/" + data[i].user_Id,
-        //           method: "GET",
-        //           success: showUserTodos
-        //         })
-        //     }))
-        // )
-        // });
-        // }
-        // }
+        $("#userTodos_list").empty();
+        if ($.isEmptyObject(data)) {
+        $("#userTodos_list").append("<h4>You have no todos for this user.</h4>");
+        } else {
+        $.each(data, function(i, todoObject) {
+            console.log(data)
+        $("#userTodos_list").append(
+            $('<div>')
+            .append($('<span>').css({
+                display: 'inline-block',
+                width: '50px'
+            }).text(data[i].Id))
+            .append($('<span>').css({
+                display: 'inline-block',
+                width: '100px'
+            }).text(data[i].Name))
+            .append($('<span>').css({
+                display: 'inline-block',
+                width: '50px'
+            }).text(data[i].Done))
+                
+            )
+        });
+        }
+        }
 
         function showError(resp, status) {
             if (resp.responseJSON && resp.responseJSON.error) {
@@ -95,7 +103,7 @@
     });
 
     </script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 

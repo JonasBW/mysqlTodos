@@ -59,15 +59,16 @@ var todosAPI = {
   },
 
   getUserTodos: function (connection, id, callback) {
-    var statment = 'SELECT user_Id, LastName, FirstName, Name\
-FROM usersTable INNER JOIN (todosTable INNER JOIN userTodosTable\
- ON todosTable.Id = userTodosTable.Todo_Id) ON usersTable.user_Id =\
-  userTodosTable.user_Id WHERE (user_Id=' + parseint(id) + ')'
+    var statment = 'SELECT usersTable.user_Id, LastName, FirstName, Name\
+ FROM usersTable INNER JOIN (todosTable INNER JOIN userTodosTable\
+ ON todosTable.Id = userTodosTable.todo_Id) ON usersTable.user_Id =\
+  userTodosTable.user_Id WHERE (usersTable.user_Id=' + parseInt(id) + ')'
+    // console.log(statment)
     connection.query(statment, function (err, rows, fields) {
       if (!err) {
         callback(rows)
       } else {
-        console.warn('Error in getTodos')
+        console.warn('Error in getUserTodos')
         callback(null)
       }
     })
